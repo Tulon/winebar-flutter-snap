@@ -2,9 +2,9 @@
 
 SNAPCRAFT_ARCH_TRIPLET=<SNAPCRAFT_ARCH_TRIPLET>
 
-SNAP=/snap/flutter/current
-SNAP_USER_COMMON=$HOME/snap/flutter/common
-SNAP_USER_DATA=$HOME/snap/flutter/current
+SNAP=/snap/winebar-flutter/current
+SNAP_USER_COMMON=$HOME/snap/winebar-flutter/common
+SNAP_USER_DATA=$HOME/snap/winebar-flutter/current
 
 export PATH=$SNAP/usr/bin:$SNAP/bin:$SNAP_USER_COMMON/flutter/bin:$PATH
 export GIT_EXEC_PATH=$SNAP/usr/lib/git-core
@@ -12,6 +12,7 @@ export GIT_CONFIG_NOSYSTEM=1
 export CURL_CA_BUNDLE=/snap/core20/current/etc/ssl/certs/ca-certificates.crt
 export GIT_SSL_CAINFO=/snap/core20/current/etc/ssl/certs/ca-certificates.crt
 export CPLUS_INCLUDE_PATH=$SNAP/usr/include/$SNAPCRAFT_ARCH_TRIPLET/c++/9:$SNAP/usr/include/c++/9:$SNAP/usr/include:$SNAP/usr/include/$SNAPCRAFT_ARCH_TRIPLET:$SNAP/usr/include/c++/9
+export C_INCLUDE_PATH=$SNAP/usr/include:$SNAP/usr/include/$SNAPCRAFT_ARCH_TRIPLET
 export LIBRARY_PATH=$SNAP/usr/lib/gcc/$SNAPCRAFT_ARCH_TRIPLET/9:$SNAP/usr/lib/$SNAPCRAFT_ARCH_TRIPLET:$SNAP/lib/$SNAPCRAFT_ARCH_TRIPLET:$SNAP/usr/lib
 export LDFLAGS="-lblkid -lgcrypt -llzma -llz4 -lgpg-error -luuid -lpthread -ldl -lepoxy -lfontconfig $LDFLAGS"
 export LDFLAGS="-L$SNAP/usr/lib/gcc/$SNAPCRAFT_ARCH_TRIPLET/9 -L$SNAP/usr/lib/$SNAPCRAFT_ARCH_TRIPLET -L$SNAP/lib/$SNAPCRAFT_ARCH_TRIPLET -L$SNAP/usr/lib/ $LDFLAGS"
@@ -24,7 +25,7 @@ HOST_DRIVERS_PATH=
 CLANG_SEARCH_DIRS=$(clang++ -print-search-dirs | awk -F = '/libraries: =/{print $NF}')
 for d in ${CLANG_SEARCH_DIRS//:/$IFS}; do
     if [ -d "$d/dri" ]; then
-        if [[ "$d" == /snap/flutter/* ]]; then
+        if [[ "$d" == /snap/winebar-flutter/* ]]; then
             SNAP_DRIVERS_PATH="$SNAP_DRIVERS_PATH:$(realpath $d/dri)"
         else
             HOST_DRIVERS_PATH="$HOST_DRIVERS_PATH:$(realpath $d/dri)"

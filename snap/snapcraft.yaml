@@ -1,12 +1,12 @@
-name: flutter
+name: winebar-flutter
 base: core20
 version: git
-summary: Flutter
+summary: A special version of Flutter environment used for building WineBar
 description: |
-  Flutter is Google’s UI toolkit for building beautiful, natively compiled
-  applications for mobile, web, and desktop from a single codebase.
+  Same as the regular Flutter snap, except it has a newer version of CMake
+  and it includes the libvulkan-dev package.
 
-grade: stable
+grade: devel
 confinement: classic
 architectures:
   - build-on: amd64
@@ -36,7 +36,6 @@ parts:
       sed -i 's#<SNAPCRAFT_ARCH_TRIPLET>#$SNAPCRAFT_ARCH_TRIPLET#' $ENV_SH
     stage-packages:
       - clang
-      - cmake
       - curl
       - git
       - jq
@@ -74,6 +73,7 @@ parts:
       - libstdc++-10-dev
       - libstdc++6
       - libuuid1
+      - libvulkan-dev
       - ninja-build
       - pkg-config
       - rsync
@@ -106,10 +106,21 @@ parts:
       - -usr/share/pixmaps
       - -usr/share/rsync
 
+  # We need a newer cmake compared to what we have in core20
+  cmake:
+    after: [flutter]
+    plugin: dump
+    source:
+      - to amd64: https://github.com/Kitware/CMake/releases/download/v3.28.0/cmake-3.28.0-linux-x86_64.tar.gz
+      - to arm64: https://github.com/Kitware/CMake/releases/download/v3.28.0/cmake-3.28.0-linux-aarch64.tar.gz
+    source-type: tar
+    prime:
+      - -doc
+      - -man
 
   # Fix pkgconfig files
   pkgconfig:
-    after: [flutter]
+    after: [flutter, cmake]
     plugin: nil
     override-prime: |
       set -eux
@@ -138,7 +149,7 @@ parts:
     override-prime: |
       set -eux
 
-      find . -type l -name "*.so*" -exec bash -c 'if [[ $(readlink $1) == /* ]] && [[ $(readlink $1) != /snap* ]]; then ln -sf /snap/flutter/current$(readlink $1) $1; fi' bash {} \;
+      find . -type l -name "*.so*" -exec bash -c 'if [[ $(readlink $1) == /* ]] && [[ $(readlink $1) != /snap* ]]; then ln -sf /snap/$SNAPCRAFT_PROJECT_NAME/current$(readlink $1) $1; fi' bash {} \;
 
       for so in usr/lib/$SNAPCRAFT_ARCH_TRIPLET/libc.so usr/lib/$SNAPCRAFT_ARCH_TRIPLET/libpthread.so usr/lib/$SNAPCRAFT_ARCH_TRIPLET/libm.so
       do
