@@ -36,6 +36,8 @@ parts:
       sed -i 's#<SNAPCRAFT_ARCH_TRIPLET>#$SNAPCRAFT_ARCH_TRIPLET#' $ENV_SH
     stage-packages:
       - clang
+      - lld
+      - llvm
       - curl
       - git
       - jq
